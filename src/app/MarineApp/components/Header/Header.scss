@@ -21,14 +21,20 @@ header {
 }
 
 .logo {
-  width: 170px;
+  width: 150px;
+  height: 95px;
+  margin-top: -55px;
+  margin-bottom: -42px;
+  transform: scale(0.90);
 
   @media #{$very-small} {
-    width: 140px;
+    width: 150px;
+    height: 95px;
   }
 
   @media #{$minimum} {
-    width: 120px;
+    width: 150px;
+    height: 95px;
     margin-right: 10px;
   }
 }
