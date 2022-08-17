@@ -6,7 +6,7 @@ import TeslaIcon from "../../images/icons/icon-tesla.svg"
 import { observer } from "mobx-react"
 import { useVisibilityNotifier } from "app/MarineApp/modules"
 import { WIDGET_TYPES } from "app/MarineApp/utils/constants"
-// import { translate } from "react-i18nify"
+// import { translate } from "react-i18nify"  todo: uncomment this when i18n files are ready
 import { ListRow } from "../ListViewWithTotals"
 import { ListView } from "../ListView"
 import { useTopicsState, useTopicSubscriptions } from "@elninotech/mfd-modules"
