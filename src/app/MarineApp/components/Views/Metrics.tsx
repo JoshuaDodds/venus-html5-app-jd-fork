@@ -7,6 +7,7 @@ import DcLoads from "../DcLoads"
 import Inverters from "../Inverters"
 import { InverterCharger } from "../InverterCharger"
 import Solar from "../Solar"
+import Vehicle from "../Vehicle"
 import Generators from "../Generators"
 import { useVebus } from "@elninotech/mfd-modules"
 import { observer } from "mobx-react"
@@ -119,6 +120,7 @@ export const Metrics = observer(
           <Battery />
           <Solar />
           {!!instanceId && <AcLoads />}
+          <Vehicle />
           {!!instanceId && (
             <InverterCharger
               onChangeInputLimitClicked={onChangeInverterChargerInputLimitClicked}
