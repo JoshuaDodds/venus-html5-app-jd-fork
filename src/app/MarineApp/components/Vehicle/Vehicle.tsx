@@ -26,8 +26,14 @@ const Vehicle = observer(() => {
   useVisibilityNotifier({ widgetName: WIDGET_TYPES.VEHICLE, visible })
 
   const vehicle_name = vehicle.vehicle_name || "My Tesla Vehicle"
-  const surplus_deficiency = (vehicle.insufficient_surplus && " / (Insufficient Surplus)") || null
-  const subtitle = vehicle.charging_status + " / " + vehicle.plugged_status + " " + surplus_deficiency
+  const surplus_deficiency = function () {
+    if (vehicle.insufficient_surplus === "true") {
+      return " / (Insufficient surplus)"
+    } else {
+      return ""
+    }
+  }
+  const subtitle = vehicle.charging_status + " / " + vehicle.plugged_status + " " + surplus_deficiency()
 
   if (visible) {
     return (
@@ -61,7 +67,7 @@ function useVehicle() {
       plugged_status: "Tesla/vehicle0/plugged_status",
       surplus_watts: "Tesla/vehicle0/solar/surplus_watts",
       load_reservation: "Tesla/vehicle0/solar/load_reservation",
-      insufficient_surplus: "Tesla/vehicle0/solar/insuffient_surplus",
+      insufficient_surplus: "Tesla/vehicle0/solar/insufficient_surplus",
     }
   }
   const topics = useMemo(function () {
