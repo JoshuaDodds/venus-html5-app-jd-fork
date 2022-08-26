@@ -1,6 +1,6 @@
-import React, { Component } from "react"
+import React, { Component, useMemo } from "react"
 
-import { Battery, useBattery } from "@elninotech/mfd-modules"
+import { Battery, useBattery, useTopicsState, useTopicSubscriptions } from "@elninotech/mfd-modules"
 import { BATTERY_STATE } from "../../../utils/constants"
 
 import ColumnContainer from "../ColumnContainer"
@@ -85,10 +85,31 @@ const BatteryRowMainInfo = (battery: Battery) => {
 }
 
 const BatteryRowAdditionalInfo = (battery: Battery) => {
+  const temperature_min_max =
+    useCustomBatteryMetrics().min_cell_temp + "° / " + useCustomBatteryMetrics().max_cell_temp + "°"
+  const cell_voltage_min_max =
+    parseFloat(useCustomBatteryMetrics().min_cell_volt).toFixed(2) +
+    "v min " +
+    parseFloat(useCustomBatteryMetrics().max_cell_volt).toFixed(2) +
+    "v max"
+
   return (
     <MetricValues inflate>
-      <div className="metrics__left">
-        <NumericValue value={battery.temperature} unit="°C" defaultValue={null} precision={1} />
+      <div className="metrics__left text--subtitle">
+        <ColumnContainer>
+          <span>
+            &nbsp;{temperature_min_max}
+            <br /> min / max
+          </span>
+        </ColumnContainer>
+        <ColumnContainer>
+          <span>{cell_voltage_min_max}</span>
+        </ColumnContainer>
+        <ColumnContainer>
+          {useCustomBatteryMetrics().capacity_available} / {useCustomBatteryMetrics().capacity_installed} Ah <br />
+          SoH: {useCustomBatteryMetrics().state_of_health}%
+        </ColumnContainer>
+        <ColumnContainer>{useCustomBatteryMetrics().modules_online} Modules Online</ColumnContainer>
       </div>
     </MetricValues>
   )
@@ -104,6 +125,9 @@ const SingleBattery = (battery: Battery) => (
   >
     <ListRow>
       <BatteryRowMainInfo {...battery} />
+    </ListRow>
+    <ListRow>
+      <BatteryRowAdditionalInfo {...battery} />
     </ListRow>
   </ListViewWithTotals>
 )
@@ -243,5 +267,26 @@ export const BatteriesWithData = observer(() => {
     return <div />
   }
 })
+
+function useCustomBatteryMetrics() {
+  const getTopics = function () {
+    return {
+      min_cell_temp: "N/48e7da878d35/battery/512/System/MinCellTemperature",
+      max_cell_temp: "N/48e7da878d35/battery/512/System/MaxCellTemperature",
+      min_cell_volt: "N/48e7da878d35/battery/512/System/MinCellVoltage",
+      max_cell_volt: "N/48e7da878d35/battery/512/System/MaxCellVoltage",
+      modules_online: "N/48e7da878d35/battery/512/System/NrOfModulesOnline",
+      modules_offline: "N/48e7da878d35/battery/512/System/NrOfModulesOffline",
+      capacity_available: "N/48e7da878d35/battery/512/Capacity",
+      capacity_installed: "N/48e7da878d35/battery/512/InstalledCapacity",
+      state_of_health: "N/48e7da878d35/battery/512/Soh",
+    }
+  }
+  const topics = useMemo(function () {
+    return getTopics()
+  }, [])
+  useTopicSubscriptions(topics)
+  return useTopicsState(topics)
+}
 
 export default BatteriesWithData
