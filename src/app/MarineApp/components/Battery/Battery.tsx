@@ -95,7 +95,7 @@ const BatteryRowAdditionalInfo = (battery: Battery) => {
 
   return (
     <MetricValues inflate>
-      <div className="metrics__left text--subtitle">
+      <div className="metrics__left text--subtitle-upper">
         <ColumnContainer>
           <span>
             &nbsp;{temperature_min_max}

@@ -1,13 +1,14 @@
 import React from "react"
 
 import ColumnContainer from "../ColumnContainer"
+import MetricValues from "../MetricValues"
+import NumericValue from "../../../components/NumericValue"
 
 import TeslaIcon from "../../images/icons/icon-tesla.svg"
 import { observer } from "mobx-react"
 import { useVisibilityNotifier } from "app/MarineApp/modules"
 import { WIDGET_TYPES } from "app/MarineApp/utils/constants"
 // import { translate } from "react-i18nify"  todo: uncomment this when i18n files are ready
-import { ListRow } from "../ListViewWithTotals"
 import { ListView } from "../ListView"
 import { useTopicsState, useTopicSubscriptions } from "@elninotech/mfd-modules"
 import { useMemo } from "react"
@@ -25,7 +26,7 @@ const Vehicle = observer(() => {
 
   useVisibilityNotifier({ widgetName: WIDGET_TYPES.VEHICLE, visible })
 
-  const vehicle_name = vehicle.vehicle_name || "My Tesla Vehicle"
+  const vehicle_name = "Vehicle: " + vehicle.vehicle_name || "My Tesla Vehicle"
   const surplus_deficiency = function () {
     if (vehicle.insufficient_surplus === "true") {
       return " / (Insufficient surplus)"
@@ -33,21 +34,45 @@ const Vehicle = observer(() => {
       return ""
     }
   }
+
   const subtitle = vehicle.charging_status + " / " + vehicle.plugged_status + " " + surplus_deficiency()
 
   if (visible) {
     return (
       <ColumnContainer>
         <ListView icon={TeslaIcon} title={vehicle_name} subTitle={subtitle} child={false}>
-          <ListRow>
-            {vehicle.charging_status} @ {vehicle.charging_amps} Amp Limited
-          </ListRow>
-          <ListRow>
-            Battery Level: {vehicle.battery_soc}% of {vehicle.battery_soc_setpoint}%
-          </ListRow>
-          <ListRow>
-            Surplus: {vehicle.surplus_watts}W / Reserved: {vehicle.load_reservation}W
-          </ListRow>
+          <table>
+            <tr>
+              <MetricValues>
+                <td width="33%">
+                  <span className="text--small text--subtitle-upper">Amps:&nbsp;</span>
+                  <NumericValue value={vehicle.charging_amps} unit="A" defaultValue={null} precision={1} />
+                </td>
+                <td width="33%">
+                  <span className="text--very-small text--subtitle-upper">SoC:&nbsp;</span>
+                  <NumericValue value={vehicle.battery_soc} unit="%" defaultValue={null} precision={1} />
+                </td>
+                <td width="33%">
+                  <span className="text--very-small text--subtitle-upper">Limit:&nbsp;</span>
+                  <NumericValue value={vehicle.battery_soc_setpoint} unit="%" defaultValue={null} precision={1} />
+                </td>
+              </MetricValues>
+            </tr>
+            <tr>
+              <MetricValues>
+                <div className="text--small">
+                  <td>
+                    <span className="text--very-small text--subtitle-upper">PV Surplus:&nbsp;</span>
+                    <NumericValue value={vehicle.surplus_watts} unit="W" defaultValue={null} precision={1} />
+                  </td>
+                  <td>
+                    <span className="text--very-small text--subtitle-upper">Watts Reserved:&nbsp;</span>
+                    <NumericValue value={vehicle.load_reservation} unit="W" defaultValue={null} precision={1} />
+                  </td>
+                </div>
+              </MetricValues>
+            </tr>
+          </table>
         </ListView>
       </ColumnContainer>
     )
