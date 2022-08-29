@@ -7,6 +7,7 @@ import DcLoads from "../DcLoads"
 import Inverters from "../Inverters"
 import { InverterCharger } from "../InverterCharger"
 import Solar from "../Solar"
+import Tibber from "../Tibber"
 import Vehicle from "../Vehicle"
 import Generators from "../Generators"
 import { useVebus } from "@elninotech/mfd-modules"
@@ -121,6 +122,7 @@ export const Metrics = observer(
           <Solar />
           {!!instanceId && <AcLoads />}
           <Vehicle />
+          <Tibber />
           {!!instanceId && (
             <InverterCharger
               onChangeInputLimitClicked={onChangeInverterChargerInputLimitClicked}

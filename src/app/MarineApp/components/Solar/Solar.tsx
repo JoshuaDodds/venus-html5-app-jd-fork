@@ -14,9 +14,9 @@ import { ListViewWithTotals } from "../ListViewWithTotals"
 
 const Solar = observer(() => {
   const { current, power } = usePvCharger()
-  const visible = !!(current || power || power === 0)
   const pvExtra = usePvDetail()
-
+  const visible = !!(current || power || power === 0)
+  const daily_yield = pvExtra.c1_daily_yield + pvExtra.c2_daily_yield
   useVisibilityNotifier({ widgetName: WIDGET_TYPES.SOLAR, visible })
 
   if (visible) {
@@ -30,8 +30,10 @@ const Solar = observer(() => {
           child={false}
         >
           <MetricValues>
-            <NumericValue value={power} unit={"W"} />
-            <NumericValue value={current} unit="A" precision={1} />
+            <span className="text--small text--subtitle-upper">Production Today&nbsp;</span>
+            <NumericValue value={daily_yield} unit="kWh" precision={2} />
+            <span className="text--small text--subtitle-upper">Pv Current&nbsp;</span>
+            <NumericValue value={current} unit=" Amps" precision={1} />
           </MetricValues>
           <MetricValues inflate>
             <div className="text--smaller">
@@ -83,6 +85,9 @@ function usePvDetail() {
       string_b_power: "N/48e7da878d35/solarcharger/280/Pv/1/P",
       string_c_volts: "N/48e7da878d35/solarcharger/280/Pv/0/V",
       string_c_power: "N/48e7da878d35/solarcharger/280/Pv/0/P",
+      //
+      c2_daily_yield: "N/48e7da878d35/solarcharger/279/History/Daily/0/Yield",
+      c1_daily_yield: "N/48e7da878d35/solarcharger/280/History/Daily/0/Yield",
     }
   }
   const topics = useMemo(function () {

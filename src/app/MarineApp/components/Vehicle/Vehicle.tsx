@@ -36,6 +36,7 @@ const Vehicle = observer(() => {
   }
 
   const subtitle = vehicle.charging_status + " / " + vehicle.plugged_status + " " + surplus_deficiency()
+  const eta = vehicle.time_until_full > 0 ? vehicle.time_until_full + " Mins" : "N/A"
 
   if (visible) {
     return (
@@ -44,17 +45,21 @@ const Vehicle = observer(() => {
           <table>
             <tr>
               <MetricValues>
-                <td width="33%">
+                <td>
                   <span className="text--small text--subtitle-upper">Amps:&nbsp;</span>
                   <NumericValue value={vehicle.charging_amps} unit="A" defaultValue={null} precision={1} />
                 </td>
-                <td width="33%">
+                <td>
                   <span className="text--very-small text--subtitle-upper">SoC:&nbsp;</span>
                   <NumericValue value={vehicle.battery_soc} unit="%" defaultValue={null} precision={1} />
                 </td>
-                <td width="33%">
+                <td>
                   <span className="text--very-small text--subtitle-upper">Limit:&nbsp;</span>
                   <NumericValue value={vehicle.battery_soc_setpoint} unit="%" defaultValue={null} precision={1} />
+                </td>
+                <td>
+                  <span className="text--very-small text--subtitle-upper">ETA:&nbsp;</span>
+                  <span>{eta}</span>
                 </td>
               </MetricValues>
             </tr>
@@ -93,6 +98,7 @@ function useVehicle() {
       surplus_watts: "Tesla/vehicle0/solar/surplus_watts",
       load_reservation: "Tesla/vehicle0/solar/load_reservation",
       insufficient_surplus: "Tesla/vehicle0/solar/insufficient_surplus",
+      time_until_full: "Tesla/vehicle0/time_until_full",
     }
   }
   const topics = useMemo(function () {
